@@ -1,0 +1,27 @@
+plugins { id 'com.android.application' }
+
+def localConfig = new Properties()
+def localConfigFile = rootProject.file('local.properties')
+if (localConfigFile.exists()) {
+    localConfigFile.withInputStream { localConfig.load(it) }
+}
+def trustedBssid = localConfig.getProperty('trustedBssid', '').trim().toLowerCase()
+if (trustedBssid && !(trustedBssid ==~ /([0-9a-f]{2}:){5}[0-9a-f]{2}/)) {
+    throw new GradleException('trustedBssid in local.properties must be a Wi-Fi BSSID')
+}
+
+android {
+    namespace 'com.boiyelove.wirelessdebugkeeper'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.boiyelove.wirelessdebugkeeper'
+        minSdk 26
+        targetSdk 32
+        versionCode 1
+        versionName '1.0'
+        buildConfigField 'String', 'TRUSTED_BSSID', '"' + trustedBssid + '"'
+    }
+
+    buildFeatures { buildConfig true }
+}

@@ -1,0 +1,3 @@
+<resources>
+    <string name="network_approval_description">Approves wireless debugging only on the configured home Wi-Fi network.</string>
+</resources>
