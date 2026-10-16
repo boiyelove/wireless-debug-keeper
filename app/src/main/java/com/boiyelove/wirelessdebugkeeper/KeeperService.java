@@ -23,6 +23,7 @@ import android.util.Log;
 
 public final class KeeperService extends Service {
     private static final String TAG = "WirelessDebugKeeper";
+    static final String ACTION_RECOVER_RADIOS = "com.boiyelove.wirelessdebugkeeper.RECOVER_RADIOS";
     private static final String CHANNEL = "wireless_debug_keeper";
     private static final String SETTING = "adb_wifi_enabled";
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -66,8 +67,14 @@ public final class KeeperService extends Service {
     private final Runnable checkOnce = this::restoreIfNeeded;
 
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.getBooleanExtra("manual", false)) lastAttempt = 0;
+        requestRadioRecovery(this);
         restoreIfNeeded();
         return START_STICKY;
+    }
+
+    static void requestRadioRecovery(Context context) {
+        context.sendBroadcast(new Intent(ACTION_RECOVER_RADIOS).setPackage(context.getPackageName()));
     }
 
     private void restoreIfNeeded() {

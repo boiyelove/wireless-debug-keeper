@@ -5,6 +5,7 @@ import android.app.job.JobService;
 
 public final class WatchdogJob extends JobService {
     @Override public boolean onStartJob(JobParameters params) {
+        KeeperService.requestRadioRecovery(this);
         KeeperService.restoreIfNeeded(this);
         return false;
     }
