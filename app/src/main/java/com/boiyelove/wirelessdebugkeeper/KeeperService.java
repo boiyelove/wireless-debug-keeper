@@ -77,6 +77,7 @@ public final class KeeperService extends Service {
         if (!hasWifi(connectivity)) return;
         // A rejected network prompt pauses retries for five minutes.
         lastAttempt = now;
+        handler.postDelayed(checkOnce, 5 * 60_000L);
         restoreIfNeeded(this);
     }
 

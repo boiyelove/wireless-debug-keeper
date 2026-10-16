@@ -12,7 +12,7 @@ import java.util.List;
 public final class NetworkApprovalService extends AccessibilityService {
     private static final String TAG = "WirelessDebugKeeper";
     private static final String TITLE = "Allow wireless debugging on this network?";
-    private static final String BSSID = BuildConfig.TRUSTED_BSSID;
+    private static final String[] BSSIDS = BuildConfig.TRUSTED_BSSIDS.split(",");
     private static final String CHECKBOX = "Always allow on this network";
     private boolean pending;
 
@@ -57,7 +57,10 @@ public final class NetworkApprovalService extends AccessibilityService {
         for (int i = 0; i < displays.size(); i++) {
             for (AccessibilityWindowInfo window : displays.valueAt(i)) {
                 AccessibilityNodeInfo root = window.getRoot();
-                if (root != null && findExact(root, TITLE) != null && contains(root, BSSID)) return root;
+                if (root == null || findExact(root, TITLE) == null) continue;
+                for (String bssid : BSSIDS) {
+                    if (!bssid.isEmpty() && contains(root, bssid)) return root;
+                }
             }
         }
         return null;
